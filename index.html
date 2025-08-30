@@ -12,6 +12,7 @@
       border-radius: 10px;
       background: #f9f9f9;
     }
+    a { color: blue; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -25,33 +26,44 @@
   <div id="detail" class="card"></div>
 
   <script>
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUO3nqT6Brk_zw6Gd3NhSNqJhzgo_UC2eAQ7HLGrvXL2cpD6E9funEbmEMjG6GjP7fQG1g7ToxCKpU/pub?gid=2060708038&single=true&output=csv";
     let dataSiswa = [];
 
-    // Ambil data dari file JSON
-    fetch("siswa.json")
-      .then(res => res.json())
-      .then(data => {
-        dataSiswa = data;
+    // Ambil data dari Google Sheets CSV
+    fetch(sheetUrl)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.split("\n").map(r => r.split(","));
+        const headers = rows[0];
+        dataSiswa = rows.slice(1).map(row => {
+          let obj = {};
+          headers.forEach((h, i) => {
+            obj[h.trim()] = row[i] ? row[i].trim() : "";
+          });
+          return obj;
+        });
+
+        // isi dropdown
         const dropdown = document.getElementById("siswa");
-        data.forEach(s => {
+        dataSiswa.forEach(s => {
           let option = document.createElement("option");
-          option.value = s.id;
-          option.textContent = s.nama;
+          option.value = s["No ID"];
+          option.textContent = s["Nama Lengkap"];
           dropdown.appendChild(option);
         });
       });
 
-    // Tampilkan detail saat dipilih
+    // tampilkan detail
     document.getElementById("siswa").addEventListener("change", function() {
       const id = this.value;
-      const siswa = dataSiswa.find(s => s.id == id);
+      const siswa = dataSiswa.find(s => s["No ID"] == id);
       const detail = document.getElementById("detail");
       if (siswa) {
         detail.innerHTML = `
-          <h3>${siswa.nama}</h3>
-          <p><b>Usia:</b> ${siswa.usia}</p>
-          <p><b>Kelas:</b> ${siswa.kelas}</p>
-          <p><b>Catatan:</b> ${siswa.catatan}</p>
+          <h3>${siswa["Nama Lengkap"]}</h3>
+          <p><b>No ID:</b> ${siswa["No ID"]}</p>
+          <p><b>Tanggal Lahir:</b> ${siswa["Tanggal Lahir"]}</p>
+          <p><b>Link Presensi:</b> <a href="${siswa["Link Presensi"]}" target="_blank">Klik di sini</a></p>
         `;
       } else {
         detail.innerHTML = "";
