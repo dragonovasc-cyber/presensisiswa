@@ -2,72 +2,88 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Database Siswa Dragonova</title>
+  <title>Data Siswa Dragonova</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    select { padding: 5px; }
-    .card {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #f9f9f9;
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* vertikal tengah */
+      align-items: center;     /* horizontal tengah */
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      text-align: center;
     }
-    .card a { color: blue; text-decoration: underline; }
+    h1 {
+      margin-bottom: 20px;
+      color: #0077b6;
+    }
+    select {
+      padding: 8px 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    #hasil {
+      font-size: 18px;
+      background: #fff;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      word-wrap: break-word;
+    }
   </style>
 </head>
 <body>
-  <h2>Database Siswa Dragonova</h2>
-
-  <label for="siswa">Pilih Nama Siswa:</label>
-  <select id="siswa"></select>
-
-  <div id="detail" class="card"></div>
+  <h1>Data Siswa Dragonova</h1>
+  <select id="dropdown">
+    <option value="">-- Pilih Siswa --</option>
+  </select>
+  <div id="hasil">Silakan pilih nama siswa di atas.</div>
 
   <script>
-    // Ganti dengan link CSV Google Sheet kamu
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUO3nqT6Brk_zw6Gd3NhSNqJhzgo_UC2eAQ7HLGrvXL2cpD6E9funEbmEMjG6GjP7fQG1g7ToxCKpU/pub?gid=2060708038&single=true&output=csv";
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUO3nqT6Brk_zw6Gd3NhSNqJhzgo_UC2eAQ7HLGrvXL2cpD6E9funEbmEMjG6GjP7fQG1g7ToxCKpU/pub?gid=2060708038&single=true&output=csv";
+    const dropdown = document.getElementById("dropdown");
+    const hasil = document.getElementById("hasil");
 
-    async function loadCSV() {
-      const response = await fetch(csvUrl);
-      const data = await response.text();
+    async function loadData() {
+      const response = await fetch(url);
+      const text = await response.text();
+      const rows = text.split("\n").map(r => r.split(","));
+      
+      // Header & data
+      const header = rows[0];
+      const data = rows.slice(1);
 
-      const rows = data.split("\n").map(r => r.split(","));
-      const headers = rows[0]; // baris header (No ID, Nama Lengkap, Tanggal Lahir, Link Presensi)
-      const siswaData = rows.slice(1); // isi data
-
-      const select = document.getElementById("siswa");
-      const detail = document.getElementById("detail");
-
-      // Isi dropdown dengan nama siswa
-      siswaData.forEach(row => {
-        if (row[1]) { // kolom Nama Lengkap
+      // Isi dropdown
+      data.forEach(row => {
+        const nama = row[0];
+        if (nama) {
           const option = document.createElement("option");
-          option.value = row[0]; // No ID
-          option.textContent = row[1]; // Nama Lengkap
-          select.appendChild(option);
+          option.value = nama;
+          option.textContent = nama;
+          dropdown.appendChild(option);
         }
       });
 
-      // Event saat ganti pilihan
-      select.addEventListener("change", () => {
-        const id = select.value;
-        const row = siswaData.find(r => r[0] === id);
+      // Event ketika dropdown dipilih
+      dropdown.addEventListener("change", () => {
+        const namaDipilih = dropdown.value;
+        const row = data.find(r => r[0] === namaDipilih);
         if (row) {
-          detail.innerHTML = `
-            <h3>${row[1]}</h3>
-            <p><b>No ID:</b> ${row[0]}</p>
-            <p><b>Tanggal Lahir:</b> ${row[2]}</p>
-            <p><b>Link Presensi:</b> <a href="${row[3]}" target="_blank">Klik di sini</a></p>
-          `;
+          let html = `<strong>${row[0]}</strong><br>`;
+          for (let i = 1; i < header.length; i++) {
+            html += `${header[i]}: ${row[i]}<br>`;
+          }
+          hasil.innerHTML = html;
+        } else {
+          hasil.innerHTML = "Silakan pilih nama siswa di atas.";
         }
       });
-
-      // Tampilkan data pertama kali
-      select.dispatchEvent(new Event("change"));
     }
 
-    loadCSV();
+    loadData();
   </script>
 </body>
 </html>
