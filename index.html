@@ -1,74 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+  <meta charset="UTF-8">
   <title>Database Siswa Dragonova</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    select, .data-siswa { margin-top: 10px; display: block; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    select { padding: 5px; }
     .card {
-      border: 1px solid #ddd;
+      margin-top: 20px;
       padding: 15px;
-      margin-top: 15px;
-      border-radius: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
       background: #f9f9f9;
     }
-    a { color: blue; text-decoration: underline; }
+    .card a { color: blue; text-decoration: underline; }
   </style>
 </head>
 <body>
   <h2>Database Siswa Dragonova</h2>
-  
+
   <label for="siswa">Pilih Nama Siswa:</label>
-  <select id="siswa">
-    <option value="">-- Pilih Siswa --</option>
-  </select>
+  <select id="siswa"></select>
 
   <div id="detail" class="card"></div>
 
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUO3nqT6Brk_zw6Gd3NhSNqJhzgo_UC2eAQ7HLGrvXL2cpD6E9funEbmEMjG6GjP7fQG1g7ToxCKpU/pub?gid=2060708038&single=true&output=csv";
-    let dataSiswa = [];
+    // Ganti dengan link CSV Google Sheet kamu
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUO3nqT6Brk_zw6Gd3NhSNqJhzgo_UC2eAQ7HLGrvXL2cpD6E9funEbmEMjG6GjP7fQG1g7ToxCKpU/pub?gid=2060708038&single=true&output=csv";
 
-    // Ambil data dari Google Sheets CSV
-    fetch(sheetUrl)
-      .then(res => res.text())
-      .then(csv => {
-        const rows = csv.split("\n").map(r => r.split(","));
-        const headers = rows[0];
-        dataSiswa = rows.slice(1).map(row => {
-          let obj = {};
-          headers.forEach((h, i) => {
-            obj[h.trim()] = row[i] ? row[i].trim() : "";
-          });
-          return obj;
-        });
+    async function loadCSV() {
+      const response = await fetch(csvUrl);
+      const data = await response.text();
 
-        // isi dropdown
-        const dropdown = document.getElementById("siswa");
-        dataSiswa.forEach(s => {
-          let option = document.createElement("option");
-          option.value = s["No ID"];
-          option.textContent = s["Nama Lengkap"];
-          dropdown.appendChild(option);
-        });
+      const rows = data.split("\n").map(r => r.split(","));
+      const headers = rows[0]; // baris header (No ID, Nama Lengkap, Tanggal Lahir, Link Presensi)
+      const siswaData = rows.slice(1); // isi data
+
+      const select = document.getElementById("siswa");
+      const detail = document.getElementById("detail");
+
+      // Isi dropdown dengan nama siswa
+      siswaData.forEach(row => {
+        if (row[1]) { // kolom Nama Lengkap
+          const option = document.createElement("option");
+          option.value = row[0]; // No ID
+          option.textContent = row[1]; // Nama Lengkap
+          select.appendChild(option);
+        }
       });
 
-    // tampilkan detail
-    document.getElementById("siswa").addEventListener("change", function() {
-      const id = this.value;
-      const siswa = dataSiswa.find(s => s["No ID"] == id);
-      const detail = document.getElementById("detail");
-      if (siswa) {
-        detail.innerHTML = `
-          <h3>${siswa["Nama Lengkap"]}</h3>
-          <p><b>No ID:</b> ${siswa["No ID"]}</p>
-          <p><b>Tanggal Lahir:</b> ${siswa["Tanggal Lahir"]}</p>
-          <p><b>Link Presensi:</b> <a href="${siswa["Link Presensi"]}" target="_blank">Klik di sini</a></p>
-        `;
-      } else {
-        detail.innerHTML = "";
-      }
-    });
+      // Event saat ganti pilihan
+      select.addEventListener("change", () => {
+        const id = select.value;
+        const row = siswaData.find(r => r[0] === id);
+        if (row) {
+          detail.innerHTML = `
+            <h3>${row[1]}</h3>
+            <p><b>No ID:</b> ${row[0]}</p>
+            <p><b>Tanggal Lahir:</b> ${row[2]}</p>
+            <p><b>Link Presensi:</b> <a href="${row[3]}" target="_blank">Klik di sini</a></p>
+          `;
+        }
+      });
+
+      // Tampilkan data pertama kali
+      select.dispatchEvent(new Event("change"));
+    }
+
+    loadCSV();
   </script>
 </body>
 </html>
