@@ -1,16 +1,10 @@
 [
   {
-    "id": 1,
-    "nama": "Sharen Nicole S.",
-    "usia": 10,
-    "kelas": "Pemula",
-    "catatan": "Perlu latihan teknik pernapasan"
-  },
-  {
-    "id": 2,
+    "id": 001,
     "nama": "Muhammad Azka Setyo Arifianto",
     "usia": 12,
     "kelas": "Menengah",
     "catatan": "Sudah bisa gaya bebas dengan baik"
   }
 ]
+
