@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Siswa Dragonova</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    select, .data-siswa { margin-top: 10px; display: block; }
+    .card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Database Siswa Dragonova</h2>
+  
+  <label for="siswa">Pilih Nama Siswa:</label>
+  <select id="siswa">
+    <option value="">-- Pilih Siswa --</option>
+  </select>
+
+  <div id="detail" class="card"></div>
+
+  <script>
+    let dataSiswa = [];
+
+    // Ambil data dari file JSON
+    fetch("siswa.json")
+      .then(res => res.json())
+      .then(data => {
+        dataSiswa = data;
+        const dropdown = document.getElementById("siswa");
+        data.forEach(s => {
+          let option = document.createElement("option");
+          option.value = s.id;
+          option.textContent = s.nama;
+          dropdown.appendChild(option);
+        });
+      });
+
+    // Tampilkan detail saat dipilih
+    document.getElementById("siswa").addEventListener("change", function() {
+      const id = this.value;
+      const siswa = dataSiswa.find(s => s.id == id);
+      const detail = document.getElementById("detail");
+      if (siswa) {
+        detail.innerHTML = `
+          <h3>${siswa.nama}</h3>
+          <p><b>Usia:</b> ${siswa.usia}</p>
+          <p><b>Kelas:</b> ${siswa.kelas}</p>
+          <p><b>Catatan:</b> ${siswa.catatan}</p>
+        `;
+      } else {
+        detail.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>
