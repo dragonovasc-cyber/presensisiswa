@@ -4,14 +4,42 @@
   <meta charset="UTF-8">
   <title>Database Siswa Dragonova</title>
   <style>
-    body { font-family: book antiqua, serif; margin: 20px; }
-    select { padding: 5px; }
+    body { 
+      font-family: "Book Antiqua", serif; 
+      font-size: 18px; 
+      margin: 20px; 
+      text-align: center; /* semua teks rata tengah */
+    }
+    h2 { 
+      font-size: 30px; 
+      font-weight: bold; 
+    }
+    h3 { 
+      font-size: 22px; 
+      color: #333; 
+    }
+    p { 
+      font-size: 18px; 
+      line-height: 1.6; 
+    }
+    label {
+      font-weight: bold;
+    }
+    select { 
+      padding: 6px; 
+      font-size: 16px; 
+      font-family: "Book Antiqua", serif; 
+      margin-top: 10px;
+    }
     .card {
-      margin-top: 20px;
-      padding: 15px;
+      margin: 20px auto;
+      padding: 18px;
       border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fae5ca;
+      border-radius: 10px;
+      background: #f9f9f9;
+      font-size: 18px;
+      max-width: 500px; /* biar tidak melebar terlalu besar */
+      text-align: center; /* isi card juga rata tengah */
     }
     .card a { color: blue; text-decoration: underline; }
   </style>
@@ -19,7 +47,7 @@
 <body>
   <h2>Database Siswa Dragonova</h2>
 
-  <label for="siswa">Pilih Nama Siswa:</label>
+  <label for="siswa">Pilih Nama Siswa:</label><br>
   <select id="siswa"></select>
 
   <div id="detail" class="card"></div>
@@ -33,7 +61,6 @@
       const data = await response.text();
 
       const rows = data.split("\n").map(r => r.split(","));
-      const headers = rows[0]; // baris header (No ID, Nama Lengkap, Tanggal Lahir, Link Presensi)
       const siswaData = rows.slice(1); // isi data
 
       const select = document.getElementById("siswa");
@@ -71,8 +98,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
