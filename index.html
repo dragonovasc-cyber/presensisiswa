@@ -7,23 +7,30 @@
     body { 
       font-family: "Book Antiqua", serif; 
       font-size: 18px; 
-      margin: 20px; 
-      text-align: center; /* semua teks rata tengah */
+      margin: 0; 
+      text-align: center; 
+      background: linear-gradient(to right, #00c6ff, #0072ff); /* gradasi biru */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+      color: #fff; /* teks utama putih */
     }
     h2 { 
       font-size: 30px; 
       font-weight: bold; 
+      margin-bottom: 20px;
     }
     h3 { 
       font-size: 22px; 
       color: #333; 
     }
-    p { 
-      font-size: 18px; 
-      line-height: 1.6; 
-    }
     label {
       font-weight: bold;
+      margin-bottom: 10px;
+      display: inline-block;
     }
     select { 
       padding: 6px; 
@@ -32,16 +39,24 @@
       margin-top: 10px;
     }
     .card {
-      margin: 20px auto;
-      padding: 18px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #f9f9f9;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9); /* putih transparan */
       font-size: 18px;
-      max-width: 500px; /* biar tidak melebar terlalu besar */
-      text-align: center; /* isi card juga rata tengah */
+      max-width: 500px; 
+      text-align: center;
+      color: #333; /* isi card gelap agar mudah dibaca */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    .card a { color: blue; text-decoration: underline; }
+    .card a { 
+      color: #0072ff; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
+    .card a:hover { 
+      text-decoration: underline; 
+    }
   </style>
 </head>
 <body>
